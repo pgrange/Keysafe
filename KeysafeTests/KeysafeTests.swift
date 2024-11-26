@@ -57,6 +57,15 @@ struct KeysafeTests {
         )
     }
     
+    @Test func canUnblindAMessage() async throws {
+        try assert_unblind_message(
+            blindedMessage: "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+            blindingFactor: "0000000000000000000000000000000000000000000000000000000000000001",
+            publicKeyOfMint: "020000000000000000000000000000000000000000000000000000000000000001",
+            expected: "03c724d7e6a5443b39ac8acf11f40420adc4f99a02e7cc1b57703d9391f6d129cd"
+        )
+    }
+    
     private func assertHashToCurve(
         message: String,
         expectedPointOnCurve: String
@@ -77,15 +86,36 @@ struct KeysafeTests {
         
         expect(result.stringRepresentation).to(equal(expected))
     }
+    
+    private func assert_unblind_message(
+        blindedMessage: String,
+        blindingFactor: String,
+        publicKeyOfMint: String,
+        expected: String
+    ) throws {
+        let blindedMessage = try secp256k1.Signing.PublicKey(dataRepresentation: Data(try blindedMessage.bytes), format: .compressed)
+        let blindingFactor = try secp256k1.Signing.PrivateKey(dataRepresentation: Data(try blindingFactor.bytes))
+        let publicKeyOfMint = try secp256k1.Signing.PublicKey(dataRepresentation: Data(try publicKeyOfMint.bytes), format: .compressed)
+        
+        let result = try CryptoService().unblindMessage(
+            blindedKey: blindedMessage,
+            blindingFactor: blindingFactor,
+            publicKeyOfMint: publicKeyOfMint)
+        
+        expect(result.stringRepresentation).to(equal(expected))
+    }
 }
 
 enum Error: Swift.Error {
     case failedToGenerateKey
     case hashToCurve(String)
+    case unsupportedFormat
+    case invalidKey
 }
 
 struct CryptoService {
     private let domainSeparator = Data("Secp256k1_HashToCurve_Cashu_".utf8)
+    private let prefix = Data([0x02])
     
     func blindMessage(message: Data, blindingFactor: secp256k1.Signing.PublicKey) throws -> secp256k1.Signing.PublicKey {
         let pointOnCurve = try hashToCurve(message: message)
@@ -93,9 +123,17 @@ struct CryptoService {
         return try pointOnCurve.combine([blindingFactor])
     }
     
+    func unblindMessage(
+        blindedKey: secp256k1.Signing.PublicKey,
+        blindingFactor: secp256k1.Signing.PrivateKey,
+        publicKeyOfMint: secp256k1.Signing.PublicKey)
+    throws -> secp256k1.Signing.PublicKey {
+        let blindingFactorMulPublicKeyOfMint = try publicKeyOfMint.multiply(blindingFactor.dataRepresentation.bytes)
+        return try blindedKey.combine([negatePublicKey(key: blindingFactorMulPublicKeyOfMint)])
+    }
+    
     func hashToCurve(message: Data) throws -> secp256k1.Signing.PublicKey {
-        let data = domainSeparator + message
-        let hash = Data(SHA256.hash(data: data))
+        let hash = Data(SHA256.hash(data: domainSeparator + message))
         var counter: UInt32 = 0
         while counter < UInt32(pow(2.0, 16)) {
             if let key = try? key_from_hash_and_counter(hash, counter) {
@@ -111,11 +149,29 @@ struct CryptoService {
         var counter = counter
         let counterData = withUnsafeBytes(of: &counter) { Data($0) }
         
-        let to_hash = hash + counterData
-        let hash = SHA256.hash(data: to_hash)
-        let prefix = Data([0x02])
-        let combined = prefix + hash
+        let hash = SHA256.hash(data: hash + counterData)
         
-        return try secp256k1.Signing.PublicKey(dataRepresentation: combined, format: .compressed)
+        return try secp256k1.Signing.PublicKey(dataRepresentation: prefix + hash, format: .compressed)
+    }
+    
+    private func negatePublicKey(key: secp256k1.Signing.PublicKey) throws -> secp256k1.Signing.PublicKey {
+        guard key.format == .compressed else {
+            throw Error.unsupportedFormat
+        }
+        
+        let serialized = key.dataRepresentation
+        
+        guard let firstByte: UInt8 = switch serialized.first {
+        case 0x03: 0x02
+        case 0x02: 0x03
+        default: throw Error.invalidKey
+        } else {
+            throw Error.invalidKey
+        }
+        
+        return try secp256k1.Signing.PublicKey(
+            dataRepresentation: Data([firstByte]) + serialized.dropFirst(),
+            format: .compressed
+        )
     }
 }
