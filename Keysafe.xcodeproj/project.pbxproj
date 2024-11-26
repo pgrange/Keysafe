@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		50DA8F702CF4BC4E00099523 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F6F2CF4BC4E00099523 /* Nimble */; };
+		50DA8F742CF4C1C800099523 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F732CF4C1C800099523 /* secp256k1 */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		50DA8F522CF48B8B00099523 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -59,6 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50DA8F702CF4BC4E00099523 /* Nimble in Frameworks */,
+				50DA8F742CF4C1C800099523 /* secp256k1 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,7 @@
 				50DA8F432CF48B8A00099523 /* Keysafe */,
 				50DA8F542CF48B8B00099523 /* KeysafeTests */,
 				50DA8F5E2CF48B8B00099523 /* KeysafeUITests */,
+				50DA8F722CF4C1C800099523 /* Frameworks */,
 				50DA8F422CF48B8A00099523 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +98,13 @@
 				50DA8F5B2CF48B8B00099523 /* KeysafeUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		50DA8F722CF4C1C800099523 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,6 +150,8 @@
 			);
 			name = KeysafeTests;
 			packageProductDependencies = (
+				50DA8F6F2CF4BC4E00099523 /* Nimble */,
+				50DA8F732CF4C1C800099523 /* secp256k1 */,
 			);
 			productName = KeysafeTests;
 			productReference = 50DA8F512CF48B8B00099523 /* KeysafeTests.xctest */;
@@ -195,6 +212,10 @@
 			);
 			mainGroup = 50DA8F382CF48B8A00099523;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */,
+				50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 50DA8F422CF48B8A00099523 /* Products */;
 			projectDirPath = "";
@@ -558,6 +579,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.18.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		50DA8F6F2CF4BC4E00099523 /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
+		50DA8F732CF4C1C800099523 /* secp256k1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */;
+			productName = secp256k1;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 50DA8F392CF48B8A00099523 /* Project object */;
 }

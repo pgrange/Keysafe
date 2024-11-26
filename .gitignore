@@ -1,0 +1,95 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcuserdatad/
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+# For Packages folder:
+# Uncomment the line below if you have a Packages directory in your repo.
+# Packages/
+
+# CocoaPods
+Pods/
+Podfile.lock
+*.xcconfig
+# Ignore Pods project files
+*.podspec
+*.xcodeproj/
+!Podfile
+
+# Carthage
+Carthage/Build/
+Carthage/Checkouts/
+.carthage/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter/
+.dart_tool/
+.vscode/
+.idea/
+
+# Swift Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# App Packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.app
+
+# Logs and Temporary Files
+*.log
+*.tmp
+*.swp
+*.lock
+*.xcuserdatad/
+
+# Build Products
+build/
+Build/
+
+# Archives
+*.xcarchive
+
+# Thumbnails and User-Specific Files
+.DS_Store
+*.plist
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Localization
+*.strings~.nib
+
+# Ignore environment settings
+.env
+.env.*
+
+# User-specific metadata
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
