@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		50DA8F702CF4BC4E00099523 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F6F2CF4BC4E00099523 /* Nimble */; };
 		50DA8F742CF4C1C800099523 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F732CF4C1C800099523 /* secp256k1 */; };
+		50DA8F7A2CF5D43B00099523 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F792CF5D43B00099523 /* secp256k1 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,9 +35,22 @@
 		50DA8F5B2CF48B8B00099523 /* KeysafeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeysafeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		50DA8F782CF5D3F000099523 /* Exceptions for "Keysafe" folder in "KeysafeTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CryptoService.swift,
+			);
+			target = 50DA8F502CF48B8B00099523 /* KeysafeTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		50DA8F432CF48B8A00099523 /* Keysafe */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				50DA8F782CF5D3F000099523 /* Exceptions for "Keysafe" folder in "KeysafeTests" target */,
+			);
 			path = Keysafe;
 			sourceTree = "<group>";
 		};
@@ -57,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50DA8F7A2CF5D43B00099523 /* secp256k1 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +142,7 @@
 			);
 			name = Keysafe;
 			packageProductDependencies = (
+				50DA8F792CF5D43B00099523 /* secp256k1 */,
 			);
 			productName = Keysafe;
 			productReference = 50DA8F412CF48B8A00099523 /* Keysafe.app */;
@@ -606,6 +622,11 @@
 			productName = Nimble;
 		};
 		50DA8F732CF4C1C800099523 /* secp256k1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */;
+			productName = secp256k1;
+		};
+		50DA8F792CF5D43B00099523 /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */;
 			productName = secp256k1;
