@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		505A86392CF8AC8500774FCD /* Base58Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 505A86382CF8AC8500774FCD /* Base58Swift */; };
+		5065AF042D12DC2300C067B5 /* BIP32 in Frameworks */ = {isa = PBXBuildFile; productRef = 5065AF032D12DC2300C067B5 /* BIP32 */; };
 		50DA8F702CF4BC4E00099523 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F6F2CF4BC4E00099523 /* Nimble */; };
 		50DA8F742CF4C1C800099523 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F732CF4C1C800099523 /* secp256k1 */; };
 		50DA8F7A2CF5D43B00099523 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 50DA8F792CF5D43B00099523 /* secp256k1 */; };
+		50FA83082D003EB700856C6A /* BIP32 in Frameworks */ = {isa = PBXBuildFile; productRef = 50FA83072D003EB700856C6A /* BIP32 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,7 @@
 		50DA8F782CF5D3F000099523 /* Exceptions for "Keysafe" folder in "KeysafeTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				BlindingFactorsRepository.swift,
 				CryptoService.swift,
 			);
 			target = 50DA8F502CF48B8B00099523 /* KeysafeTests */;
@@ -72,6 +76,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50DA8F7A2CF5D43B00099523 /* secp256k1 in Frameworks */,
+				5065AF042D12DC2300C067B5 /* BIP32 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +85,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				50DA8F702CF4BC4E00099523 /* Nimble in Frameworks */,
+				50FA83082D003EB700856C6A /* BIP32 in Frameworks */,
+				505A86392CF8AC8500774FCD /* Base58Swift in Frameworks */,
 				50DA8F742CF4C1C800099523 /* secp256k1 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,6 +150,7 @@
 			name = Keysafe;
 			packageProductDependencies = (
 				50DA8F792CF5D43B00099523 /* secp256k1 */,
+				5065AF032D12DC2300C067B5 /* BIP32 */,
 			);
 			productName = Keysafe;
 			productReference = 50DA8F412CF48B8A00099523 /* Keysafe.app */;
@@ -168,6 +176,8 @@
 			packageProductDependencies = (
 				50DA8F6F2CF4BC4E00099523 /* Nimble */,
 				50DA8F732CF4C1C800099523 /* secp256k1 */,
+				505A86382CF8AC8500774FCD /* Base58Swift */,
+				50FA83072D003EB700856C6A /* BIP32 */,
 			);
 			productName = KeysafeTests;
 			productReference = 50DA8F512CF48B8B00099523 /* KeysafeTests.xctest */;
@@ -231,6 +241,8 @@
 			packageReferences = (
 				50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */,
 				50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */,
+				505A86372CF8AC8500774FCD /* XCRemoteSwiftPackageReference "Base58Swift" */,
+				50FA83062D003EB700856C6A /* XCRemoteSwiftPackageReference "BIP32" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 50DA8F422CF48B8A00099523 /* Products */;
@@ -597,6 +609,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		505A86372CF8AC8500774FCD /* XCRemoteSwiftPackageReference "Base58Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/keefertaylor/Base58Swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.14;
+			};
+		};
 		50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Nimble.git";
@@ -613,9 +633,27 @@
 				minimumVersion = 0.18.0;
 			};
 		};
+		50FA83062D003EB700856C6A /* XCRemoteSwiftPackageReference "BIP32" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/zeugmaster/BIP32.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		505A86382CF8AC8500774FCD /* Base58Swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 505A86372CF8AC8500774FCD /* XCRemoteSwiftPackageReference "Base58Swift" */;
+			productName = Base58Swift;
+		};
+		5065AF032D12DC2300C067B5 /* BIP32 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50FA83062D003EB700856C6A /* XCRemoteSwiftPackageReference "BIP32" */;
+			productName = BIP32;
+		};
 		50DA8F6F2CF4BC4E00099523 /* Nimble */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 50DA8F6E2CF4BC4E00099523 /* XCRemoteSwiftPackageReference "Nimble" */;
@@ -630,6 +668,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50DA8F712CF4C0D400099523 /* XCRemoteSwiftPackageReference "secp256k1" */;
 			productName = secp256k1;
+		};
+		50FA83072D003EB700856C6A /* BIP32 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50FA83062D003EB700856C6A /* XCRemoteSwiftPackageReference "BIP32" */;
+			productName = BIP32;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

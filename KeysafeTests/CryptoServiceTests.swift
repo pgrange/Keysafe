@@ -18,6 +18,13 @@ extension secp256k1.Signing.PublicKey {
     }
 }
 
+extension secp256k1.Signing.PrivateKey {
+    var stringRepresentation:String {
+        return String(bytes: self.dataRepresentation)
+    }
+}
+
+
 struct CryptoServiceTests {
     
     @Test func canProjectMessageOnTheCurve() async throws {
