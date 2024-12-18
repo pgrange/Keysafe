@@ -42,9 +42,9 @@
 		50DA8F782CF5D3F000099523 /* Exceptions for "Keysafe" folder in "KeysafeTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AttestationIdsRepository.swift,
-				BlindingFactorsRepository.swift,
-				CryptoService.swift,
+				crypto/CryptoRepositories.swift,
+				crypto/CryptoService.swift,
+				crypto/Keys.swift,
 			);
 			target = 50DA8F502CF48B8B00099523 /* KeysafeTests */;
 		};

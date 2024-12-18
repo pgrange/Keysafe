@@ -1,29 +1,8 @@
-//
-//  KeysafeTests.swift
-//  KeysafeTests
-//
-//  Created by pascal on 25/11/2024.
-//
-
 import Testing
 import Nimble
 @testable import Keysafe
 
 import Foundation
-import secp256k1
-
-extension secp256k1.Signing.PublicKey {
-    var stringRepresentation:String {
-        return String(bytes: self.dataRepresentation)
-    }
-}
-
-extension secp256k1.Signing.PrivateKey {
-    var stringRepresentation:String {
-        return String(bytes: self.dataRepresentation)
-    }
-}
-
 
 struct CryptoServiceTests {
     
@@ -71,7 +50,7 @@ struct CryptoServiceTests {
         expectedPointOnCurve: String
     ) throws {
         let result = try CryptoService().hashToCurve(message: Data(try message.bytes))
-        expect(result.stringRepresentation).to(equal(expectedPointOnCurve))
+        expect(String(bytes: result.dataRepresentation)).to(equal(expectedPointOnCurve))
     }
     
     private func assert_blind_message(
@@ -80,11 +59,11 @@ struct CryptoServiceTests {
         expected: String
     ) throws {
         let message = Data(try message.bytes)
-        let blindingFactor = try secp256k1.Signing.PrivateKey(dataRepresentation: Data(try blindingFactor.bytes))
+        let blindingFactor : PublicKey = try PrivateKey(data: Data(try blindingFactor.bytes)).publicKey
         
-        let result = try CryptoService().blindMessage(message: message, blindingFactor: blindingFactor.publicKey)
+        let result = try CryptoService().blindMessage(message: message, blindingFactor: blindingFactor)
         
-        expect(result.stringRepresentation).to(equal(expected))
+        expect(String(bytes: result.dataRepresentation)).to(equal(expected))
     }
     
     private func assert_unblind_message(
@@ -93,15 +72,15 @@ struct CryptoServiceTests {
         publicKeyOfMint: String,
         expected: String
     ) throws {
-        let blindedMessage = try secp256k1.Signing.PublicKey(dataRepresentation: Data(try blindedMessage.bytes), format: .compressed)
-        let blindingFactor = try secp256k1.Signing.PrivateKey(dataRepresentation: Data(try blindingFactor.bytes))
-        let publicKeyOfMint = try secp256k1.Signing.PublicKey(dataRepresentation: Data(try publicKeyOfMint.bytes), format: .compressed)
+        let blindedMessage = try PublicKey(data: Data(try blindedMessage.bytes))
+        let blindingFactor = try PrivateKey(data: Data(try blindingFactor.bytes))
+        let publicKeyOfMint = try PublicKey(data: Data(try publicKeyOfMint.bytes))
         
         let result = try CryptoService().unblindMessage(
             blindedKey: blindedMessage,
             blindingFactor: blindingFactor,
             publicKeyOfMint: publicKeyOfMint)
         
-        expect(result.stringRepresentation).to(equal(expected))
+        expect(String(bytes: result.dataRepresentation)).to(equal(expected))
     }
 }

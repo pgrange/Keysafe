@@ -1,18 +1,8 @@
-//
-//  KeysafeTests.swift
-//  KeysafeTests
-//
-//  Created by pascal on 25/11/2024.
-//
-
 import Testing
 import Nimble
 @testable import Keysafe
 
 import Foundation
-import secp256k1
-import Base58Swift
-
 
 struct BlindingFactorsRepositoryTests {
     
@@ -22,6 +12,7 @@ struct BlindingFactorsRepositoryTests {
     // Derivation path for blinding factor number 12043:
     // m/1835626100'/1886546294'/0'/4075832'/12043/0
     // Private key: KyMREnFwNjUB5xDLmDZ4Tphxo479hp138tebvGZ56LqaibaLLCU7
+    // Public key: 03b64ed09da93b4cd067c8ad29877fda98f594740dcf4c7977f6ad89b3cefc6ec0
     //
     // Derivation path for attestation number number 12043:
     // m/1835626100'/1886546294'/0'/4075832'/12043/1
@@ -29,48 +20,14 @@ struct BlindingFactorsRepositoryTests {
     private let testSeed = "46f6035476980efb390749d3ad278e6166e2003d8cab716063746d74f9f18148c13caacfe3bf33d5934bbd42848fcd81b9aacbeab19e81482af4108b19c6065f"
     
     @Test func canGetBlindingFactorForAttestationIndex() async throws {
-        let repository = try BlindingFactorsRepository(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let repository = BlindingFactorsRepository(rootKey: rootKey)
         
         let blindingFactor = try repository.getBlindingFactor(attestationIndex: 12043)
         
-        let expectedBlindingFactor = try wifToPrivateKey(wif: "KyMREnFwNjUB5xDLmDZ4Tphxo479hp138tebvGZ56LqaibaLLCU7")
-        expect(blindingFactor.stringRepresentation).to(equal(expectedBlindingFactor.stringRepresentation))
+        // We can not expose the private key material of the blinding factor
+        // so we assert only on the public key part of the blinding factor
+        let expectedPublicKeyForBlindingFactor  = "03b64ed09da93b4cd067c8ad29877fda98f594740dcf4c7977f6ad89b3cefc6ec0"
+        expect(blindingFactor.publicKey.dataRepresentation.toHexString()).to(equal(expectedPublicKeyForBlindingFactor))
     }
-}
-
-enum WIFError: Swift.Error {
-    case invalidWIF
-    case invalidChecksum
-}
-
-func wifToPrivateKey(wif: String) throws -> secp256k1.Signing.PrivateKey {
-    // Décodage Base58Check
-    guard let decoded = Base58.base58CheckDecode(wif) else {
-        throw WIFError.invalidWIF
-    }
-    
-    // Vérification de la longueur minimale (préfixe + clé + checksum)
-    guard decoded.count >= 34 else {
-        throw WIFError.invalidWIF
-    }
-    
-    // Extraire le payload et le checksum
-    let payload = decoded
-    
-    // Vérifier le préfixe
-    guard payload.first == 0x80 else {
-        throw WIFError.invalidWIF
-    }
-    
-    // Vérifier si la clé est compressée (dernier octet == 0x01)
-    let isCompressed = payload.count == 34 && payload.last == 0x01
-    
-    // Extraire la clé privée brute (32 octets)
-    let keyData = isCompressed ? payload.dropFirst().dropLast() : payload.dropFirst()
-    print(keyData.count)
-    guard keyData.count == 32 else {
-        throw WIFError.invalidWIF
-    }
-    
-    return try secp256k1.Signing.PrivateKey(dataRepresentation: keyData)
 }
