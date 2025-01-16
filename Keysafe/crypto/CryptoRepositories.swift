@@ -34,6 +34,35 @@ class AttestationIdsRepository {
     }
 }
 
+class IdentityRepository {
+    private let rootKey: ExtendedPrivateKey
+    
+    init(rootKey: ExtendedPrivateKey) {
+        self.rootKey = rootKey
+    }
+    /*
+     Derivation path:
+     m / purpose' / account' / index
+     
+     With:
+     * m: the root key
+     * purpose: auth / 0x61757468 / 1635087464 (See Bip-43)
+     * account: 0
+     * index: 0
+     */
+    func getIdentity() throws -> ExtendedPrivateKey {
+        let purpose = DerivationHelper.hardened(1635087464)
+        let account = DerivationHelper.hardened(0)
+        let index: UInt32 = 0
+        
+        return try rootKey
+            .derive(index: purpose)
+            .derive(index: account)
+            .derive(index: index)
+    }
+}
+
+
 private class DerivationHelper {
     private let rootKey: ExtendedPrivateKey
     
@@ -60,10 +89,11 @@ private class DerivationHelper {
      *   attestation id: 1
      */
     func derive(attestationIndex: UInt32, objectType: UInt32) throws -> ExtendedPrivateKey {
-        let purpose = hardened(1835626100)
-        let coinType = hardened(1886546294)
-        let account = hardened(0)
-        let unit = hardened(4075832)
+        // TODO implement nuts 20 https://github.com/cashubtc/nuts/blob/main/20.md
+        let purpose = DerivationHelper.hardened(1835626100)
+        let coinType = DerivationHelper.hardened(1886546294)
+        let account = DerivationHelper.hardened(0)
+        let unit = DerivationHelper.hardened(4075832)
         let index = attestationIndex
         
         return try rootKey
@@ -75,7 +105,7 @@ private class DerivationHelper {
             .derive(index: objectType)
     }
     
-    private func hardened(_ index: UInt32) -> UInt32 {
+    fileprivate static func hardened(_ index: UInt32) -> UInt32 {
         return 2147483648 + index
     }
 }

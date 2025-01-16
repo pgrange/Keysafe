@@ -42,6 +42,9 @@ class PrivateKey {
         try PublicKey(key: pubKey.key.multiply(self.key.dataRepresentation.bytes))
         
     }
+    func sign(digest: Data) throws -> Data {
+        return try key.signature(for: digest).dataRepresentation
+    }
 }
 
 class PublicKey {
