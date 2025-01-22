@@ -46,6 +46,14 @@ struct CryptoServiceTests {
         // m/1835626100'/1886546294'/0'/4075832'/n/1
         // See https://iancoleman.io/bip39/
         var assertionForIndex: [Int: BlindMessageAssertion] = [:]
+        assertionForIndex[0] =        BlindMessageAssertion(
+            message: "03c031acce93e5869ea61125cf64bcdc1f89cffda8efee94657e9609c27accdf1d",
+            blindingFactor: try wifToHex(wifKey: "L1EEg8mBPRGaTou8ru8yMF5sRuKRk7e7aBvSCEpamDbAB8SkLF5z"),
+            expected: "03a74728e33ba5b41d561ccf01f1cfa4055d0c0a4491c48eed28efd3936aac03fc")
+        assertionForIndex[1] =        BlindMessageAssertion(
+            message: "027ef5c12a828f5e32ff3c9b896d6a3311adc6ef63221d77e41171fcb0e9f755d5",
+            blindingFactor: try wifToHex(wifKey: "L1rrA8FvjuDUdEbnBHguraH3gMXc61okJBpGzi5NcdV7rJyPGKMG"),
+            expected: "029621c1cefbf6ca0b781e2bfe6be4f23773fa8a76ec2b0e90dabcb188b4f22e83")
         assertionForIndex[12043] =        BlindMessageAssertion(
             message: "8f5242d73ce2c5cf7de8b6df8c039dab02a96a97820b60b9c5c13a9d61770db1",
             blindingFactor: try wifToHex(wifKey: "KyMREnFwNjUB5xDLmDZ4Tphxo479hp138tebvGZ56LqaibaLLCU7"),
@@ -108,6 +116,12 @@ struct CryptoServiceTests {
             blindingFactor: "0000000000000000000000000000000000000000000000000000000000000001",
             publicKeyOfMint: "020000000000000000000000000000000000000000000000000000000000000001",
             expected: "03c724d7e6a5443b39ac8acf11f40420adc4f99a02e7cc1b57703d9391f6d129cd"
+        )
+        try assert_unblind_message(
+            blindedMessage: "03a74728e33ba5b41d561ccf01f1cfa4055d0c0a4491c48eed28efd3936aac03fc",
+            blindingFactor: try wifToHex(wifKey: "L1EEg8mBPRGaTou8ru8yMF5sRuKRk7e7aBvSCEpamDbAB8SkLF5z"),
+            publicKeyOfMint: "03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9",
+            expected: "c031acce93e5869ea61125cf64bcdc1f89cffda8efee94657e9609c27accdf1d"
         )
     }
     
