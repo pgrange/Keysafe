@@ -46,6 +46,7 @@
 				crypto/CryptoRepositories.swift,
 				crypto/CryptoService.swift,
 				crypto/Keys.swift,
+				crypto/Utils.swift,
 			);
 			target = 50DA8F502CF48B8B00099523 /* KeysafeTests */;
 		};

@@ -10,25 +10,26 @@ struct AttestationRepositoryTests {
     
     @Test func canStoreABlindedAttestationAndReturnItUnblinded() async throws {
         let cryptoService = CryptoService()
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let blindingFactorsRepository = BlindingFactorsRepository(rootKey: rootKey)
         let attestationIdsRepository = try AttestationIdsRepository(rootKey: rootKey)
         var attestationRepository = InMemoryAttestationRepository(cryptoService: cryptoService, blindingFactorsRepository: blindingFactorsRepository)
         
         let attestationId: Data = try attestationIdsRepository.getAttestationId(attestationIndex: 0)
-        expect("c031acce93e5869ea61125cf64bcdc1f89cffda8efee94657e9609c27accdf1d").to(equal(String(bytes: attestationId)))
+        expect(attestationId.toHexString())
+            .to(equal("c031acce93e5869ea61125cf64bcdc1f89cffda8efee94657e9609c27accdf1d"))
         
         let blindingFactor = try blindingFactorsRepository.getBlindingFactor(attestationIndex: 0)
-        expect("02686a3077dee57aae98f1544898eebd370f9ef17fa4d0226316cc2f8f856033fe").to(equal(String(bytes: blindingFactor.publicKey.dataRepresentation)))
+        expect(blindingFactor.publicKey.dataRepresentation.toHexString())
+            .to(equal("02686a3077dee57aae98f1544898eebd370f9ef17fa4d0226316cc2f8f856033fe"))
         
         let blindAttestationId: PublicKey = try cryptoService.blindMessage(message: attestationId, blindingFactor: blindingFactor.publicKey)
-        expect("020ade5d0494ee5a42b11b619bd1ac49364c3a91a549b58fa6db91f7a2a4bf2439").to(equal(String(bytes: blindAttestationId.dataRepresentation)))
+        expect(blindAttestationId.dataRepresentation.toHexString()).to(equal("020ade5d0494ee5a42b11b619bd1ac49364c3a91a549b58fa6db91f7a2a4bf2439"))
         
         let blindSignedAttestion = try simulateMintSignature(blindAttestationId: blindAttestationId);
         
-        
-        let unblinAttestationId = try cryptoService.unblindMessage(blindedKey: blindSignedAttestion, blindingFactor: blindingFactor, publicKeyOfMint: PublicKey(data: Data( "03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9".bytes)))
-        expect(attestationId).to(equal(unblinAttestationId.dataRepresentation))
+        let unblinAttestationId = try cryptoService.unblindMessage(blindedKey: blindSignedAttestion, blindingFactor: blindingFactor, publicKeyOfMint: PublicKey(data: Data(hexString: "03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9")))
+        expect(attestationId.toHexString()).to(equal(unblinAttestationId.dataRepresentation.toHexString()))
         
         
 //        attestationRepository.push(attestationIndex: 0, attestation: blindSignedAttestion)
@@ -38,15 +39,15 @@ struct AttestationRepositoryTests {
     }
     
     func simulateMintSignature(blindAttestationId: PublicKey) throws -> PublicKey {
-        let blindAttestationId = String(bytes: blindAttestationId.dataRepresentation)
+        let blindAttestationId = blindAttestationId.dataRepresentation.toHexString()
         expect(blindAttestationId).to(equal("020ade5d0494ee5a42b11b619bd1ac49364c3a91a549b58fa6db91f7a2a4bf2439"))
         
-        return try PublicKey(data: Data( "03d43aa5a3eb0fae292c4e7649806b21fe849f59316ad6dd89209d9e792235b3b5".bytes))
+        return try PublicKey(data: Data(hexString: "03d43aa5a3eb0fae292c4e7649806b21fe849f59316ad6dd89209d9e792235b3b5"))
     }
 }
 
 struct InMemoryAttestationRepository {
-    private var attestations: [(UInt32, String)] = []
+    private var blindSignedAttestations: [(UInt32, Data)] = []
     private let cryptoService: CryptoService
     private let blindingFactorsRepository: BlindingFactorsRepository
     
@@ -55,17 +56,22 @@ struct InMemoryAttestationRepository {
         self.blindingFactorsRepository = blindingFactorsRepository
     }
     
-    mutating func push(attestationIndex: UInt32, attestation: String) {
-        attestations.append((attestationIndex, attestation))
+    mutating func push(attestationIndex: UInt32, blindSignedAttestation: Data) {
+        blindSignedAttestations.append((attestationIndex, blindSignedAttestation))
     }
         
-    mutating func pop() throws -> String {
-        let (index, attestation) = attestations.removeFirst()
+    mutating func pop() throws -> Data {
+        let (index, blindSignedAttestation) = blindSignedAttestations.removeFirst()
         
-        let blindedKey = try PublicKey(data: Data(try attestation.bytes))
+        let blindedKey = try PublicKey(data: blindSignedAttestation)
         let blindingFactor = try blindingFactorsRepository.getBlindingFactor(attestationIndex: index)
-        let publicKeyOfMint = try PublicKey(data: Data(try "03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9".bytes)) //TODO deal with the real public key of mint
+        //TODO deal with the real public key of mint
+        let publicKeyOfMint = try PublicKey(data: Data(hexString: "03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9"))
         
-        return try String(bytes: cryptoService.unblindMessage(blindedKey: blindedKey, blindingFactor: blindingFactor, publicKeyOfMint: publicKeyOfMint).dataRepresentation)
+        return try cryptoService.unblindMessage(
+            blindedKey: blindedKey,
+            blindingFactor: blindingFactor,
+            publicKeyOfMint: publicKeyOfMint
+        ).dataRepresentation
     }
 }

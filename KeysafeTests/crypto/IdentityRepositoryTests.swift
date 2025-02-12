@@ -28,7 +28,7 @@ struct IdentityRepositoryTests {
     private let testSeed = "46f6035476980efb390749d3ad278e6166e2003d8cab716063746d74f9f18148c13caacfe3bf33d5934bbd42848fcd81b9aacbeab19e81482af4108b19c6065f"
     
     @Test func canGetIdentity() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let repository = IdentityRepository(rootKey: rootKey)
         
         let identity: PrivateKey = try repository.getIdentity()

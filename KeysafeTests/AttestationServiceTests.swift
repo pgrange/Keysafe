@@ -26,7 +26,7 @@ struct AttestationServiceTests {
     private let testSeed = "46f6035476980efb390749d3ad278e6166e2003d8cab716063746d74f9f18148c13caacfe3bf33d5934bbd42848fcd81b9aacbeab19e81482af4108b19c6065f"
     
     @Test func canPrepareAnAttestationRequestWithCorrectIdentity() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let identityRepository = IdentityRepository(rootKey: rootKey)
         let blindingFactorsRepository = BlindingFactorsRepository(rootKey: rootKey)
         let attestationIdsRepository = try AttestationIdsRepository(rootKey: rootKey)
@@ -43,7 +43,7 @@ struct AttestationServiceTests {
     }
     
     @Test func canPrepareAnAttestationRequestWithCorrectExpirationTime() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let identityRepository = IdentityRepository(rootKey: rootKey)
         let blindingFactorsRepository = BlindingFactorsRepository(rootKey: rootKey)
         let attestationIdsRepository = try AttestationIdsRepository(rootKey: rootKey)
@@ -59,7 +59,7 @@ struct AttestationServiceTests {
     }
     
     @Test func canPrepareAnAttestationRequestWithCorrectOutputs() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let identityRepository = IdentityRepository(rootKey: rootKey)
         let blindingFactorsRepository = BlindingFactorsRepository(rootKey: rootKey)
         let attestationIdsRepository = try AttestationIdsRepository(rootKey: rootKey)
@@ -86,7 +86,7 @@ struct AttestationServiceTests {
     }
     
     @Test func canPrepareAnAttestationRequestWithValidSignature() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let identityRepository = IdentityRepository(rootKey: rootKey)
         let blindingFactorsRepository = BlindingFactorsRepository(rootKey: rootKey)
         let attestationIdsRepository = try AttestationIdsRepository(rootKey: rootKey)
@@ -102,7 +102,7 @@ struct AttestationServiceTests {
         let toDigest = attestationRequest.header.uid + attestationRequest.header.expiry + attestationRequest.outputs.joined()
         let digest = Data(SHA256.hash(data: Data(toDigest.utf8)))
 
-        let signature = try secp256k1.Signing.ECDSASignature(dataRepresentation: Data(attestationRequest.signature.bytes))
+        let signature = try secp256k1.Signing.ECDSASignature(dataRepresentation: Data(hexString: attestationRequest.signature))
         
         let publicKey = try secp256k1.Signing.PublicKey(dataRepresentation: identityRepository.getIdentity().publicKey.dataRepresentation,
                                                         format: .compressed)

@@ -20,10 +20,10 @@ struct BlindingFactorsRepositoryTests {
     private let testSeed = "46f6035476980efb390749d3ad278e6166e2003d8cab716063746d74f9f18148c13caacfe3bf33d5934bbd42848fcd81b9aacbeab19e81482af4108b19c6065f"
     
     @Test func canGetBlindingFactorForAttestationIndex() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let repository = BlindingFactorsRepository(rootKey: rootKey)
         
-        let blindingFactor = try repository.getBlindingFactor(attestationIndex: 12043)
+        let blindingFactor: ExtendedPrivateKey = try repository.getBlindingFactor(attestationIndex: 12043)
         
         // We can not expose the private key material of the blinding factor
         // so we assert only on the public key part of the blinding factor
