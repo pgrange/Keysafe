@@ -20,12 +20,24 @@ struct AttestationIdsRepositoryTests {
     private let testSeed = "46f6035476980efb390749d3ad278e6166e2003d8cab716063746d74f9f18148c13caacfe3bf33d5934bbd42848fcd81b9aacbeab19e81482af4108b19c6065f"
     
     @Test func canGetAttestationIdForAttestationIndex() async throws {
-        let rootKey = try MasterPrivateKey(seed: Data(testSeed.bytes))
+        let rootKey = try MasterPrivateKey(seed: Data(hexString: testSeed))
         let repository = try AttestationIdsRepository(rootKey: rootKey)
         
-        let attestationId = try repository.getAttestationId(attestationIndex: 12043)
+        try assertAttestationId(
+            repository,
+            attestationIndex: 12043,
+            expectedAttestationId: "8f5242d73ce2c5cf7de8b6df8c039dab02a96a97820b60b9c5c13a9d61770db1"
+        )
+        try assertAttestationId(
+            repository,
+            attestationIndex: 0,
+            expectedAttestationId: "c031acce93e5869ea61125cf64bcdc1f89cffda8efee94657e9609c27accdf1d"
+        )
+    }
+    
+    fileprivate func assertAttestationId(_ repository: AttestationIdsRepository, attestationIndex: UInt32, expectedAttestationId: String) throws {
+        let attestationId = try repository.getAttestationId(attestationIndex: attestationIndex)
         
-        let expectedAttestationId = "8f5242d73ce2c5cf7de8b6df8c039dab02a96a97820b60b9c5c13a9d61770db1"
-        expect(attestationId).to(equal(expectedAttestationId))
+        expect(attestationId.toHexString()).to(equal(expectedAttestationId))
     }
 }

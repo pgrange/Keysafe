@@ -28,15 +28,26 @@ struct AttestationService {
         var outputs: [String] = []
         for attestationIndex: UInt32 in firstAttestationIndex..<firstAttestationIndex + UInt32(amount) {
             let blindingFactor = try blindingFactorsRepository.getBlindingFactor(attestationIndex: attestationIndex)
-            let attestationId = try attestationIdsRepository.getAttestationId(attestationIndex: attestationIndex)
-            let output = try cryptoService.blindMessage(message: Data(try attestationId.bytes), blindingFactor: blindingFactor.publicKey).dataRepresentation.toHexString()
+            let attestationId: Data = try attestationIdsRepository.getAttestationId(attestationIndex: attestationIndex)
+            let output = try cryptoService.blindMessage(
+                message: attestationId,
+                blindingFactor: blindingFactor.publicKey
+            ).dataRepresentation.toHexString()
+            
             outputs.append(output)
         }
         
         let digest = SHA256.hash(data: Data((uid + expiry + outputs.joined()).utf8))
         let signature = try identity.sign(digest: Data(digest))
         
-        return AttestationRequest(for: amount, publicKey: publicKey, uid: uid, expiry: expiry, outputs: outputs, signature: String(bytes: signature))
+        return AttestationRequest(
+            for: amount,
+            publicKey: publicKey,
+            uid: uid,
+            expiry: expiry,
+            outputs: outputs,
+            signature: signature.toHexString()
+        )
     }
 
     enum SecureRandomError: Swift.Error {

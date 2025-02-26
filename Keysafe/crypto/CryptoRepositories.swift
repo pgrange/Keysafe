@@ -27,10 +27,10 @@ class AttestationIdsRepository {
     // See https://github.com/cashubtc/nuts/blob/main/00.md
     // the use of a 64 character hex string generated from 32 random bytes
     // is recommended to prevent fingerprinting
-    func getAttestationId(attestationIndex: UInt32) throws -> String {
+    func getAttestationId(attestationIndex: UInt32) throws -> Data {
         let publicKey = try repositories.derive(attestationIndex: attestationIndex, objectType: ATTESTATION_ID).publicKey.dataRepresentation
         let only32BytesOfPublicKey = publicKey.dropFirst()
-        return String(bytes: only32BytesOfPublicKey)
+        return only32BytesOfPublicKey
     }
 }
 
@@ -89,7 +89,8 @@ private class DerivationHelper {
      *   attestation id: 1
      */
     func derive(attestationIndex: UInt32, objectType: UInt32) throws -> ExtendedPrivateKey {
-        // TODO implement nuts 20 https://github.com/cashubtc/nuts/blob/main/20.md
+        // TODO (or not) implement nuts 13 https://github.com/cashubtc/nuts/blob/main/13.md
+        // TODO support more than one coinType
         let purpose = DerivationHelper.hardened(1835626100)
         let coinType = DerivationHelper.hardened(1886546294)
         let account = DerivationHelper.hardened(0)
